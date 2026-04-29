@@ -18,6 +18,20 @@ class TOYSOLDIERS_API UHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
+	void TakeDamage(float DamageAmount);
+	UPROPERTY(BlueprintAssignable, Category = "Health")
+	FOnTakeDamageSignature OnTakeDamage;
+
+	void Heal(float HealAmount, bool ignoreMaxHealth = false);
+	UPROPERTY(BlueprintAssignable, Category = "Health")
+	FOnHealSignature OnHeal;
+
+	void Die();
+	UPROPERTY(BlueprintAssignable, Category = "Health")
+	FOnDeathSignature OnDeath;
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealthPercentage() const { return CurrentHealth / MaxHealth; }
 
 protected:
 	// Called when the game starts
@@ -28,22 +42,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
 	float CurrentHealth = 100.f;
-
-	void TakeDamage(float DamageAmount);
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnTakeDamageSignature OnTakeDamage;
-
-	void Heal(float HealAmount, bool ignoreMaxHealth = false);
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnHealSignature OnHeal;
-
-	void Die();	
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnDeathSignature OnDeath;
-
-	UFUNCTION(BlueprintPure, Category = "Health")
-	float GetHealthPercentage() const { return CurrentHealth / MaxHealth; }
-
 
 public:	
 	// Called every frame
