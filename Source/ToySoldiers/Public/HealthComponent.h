@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealthPercentage() const { return CurrentHealth / MaxHealth; }
 
+	UPROPERTY(EditDefaultsOnly, Category = "Health")
+	bool AutoDestroyOnDeath = false;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -42,6 +45,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
 	float CurrentHealth = 100.f;
+
+	UFUNCTION()
+	void HandleTakeAnyDamage(
+		AActor* DamagedActor,
+		float Damage,
+		const UDamageType* DamageType,
+		AController* InstigatedBy,
+		AActor* DamageCauser
+	);
+
+	bool isOnPlayer;
 
 public:	
 	// Called every frame

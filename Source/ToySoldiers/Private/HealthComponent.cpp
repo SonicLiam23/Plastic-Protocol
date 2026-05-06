@@ -2,6 +2,7 @@
 
 
 #include "HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -20,8 +21,18 @@ void UHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 	Owner = GetOwner();
+	Owner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::HandleTakeAnyDamage);
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Player health Setup!"));
+
+	isOnPlayer = false;
+	if (APawn* Pawn = Cast<APawn>(Owner))
+	{
+		if (Pawn->IsPlayerControlled())
+		{
+			isOnPlayer = true;
+		}
+	}
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount)
@@ -47,12 +58,23 @@ void UHealthComponent::Heal(float HealAmount, bool ignoreMaxHealth)
 void UHealthComponent::Die()
 {
 	OnDeath.Broadcast();
-	if (Owner)
+
+	if (!isOnPlayer)
+	{
+		// make player get XP, currently working on stats class
+	}
+
+	if (Owner && AutoDestroyOnDeath)
 	{
 		Owner->Destroy();
 	}
 }
 
+
+void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	TakeDamage(Damage);
+}
 
 // Called every frame
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

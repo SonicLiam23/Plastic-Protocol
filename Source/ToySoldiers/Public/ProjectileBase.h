@@ -3,7 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "NiagaraSystem.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "Containers/Array.h"
+
 #include "ProjectileBase.generated.h"
 
 UCLASS()
@@ -14,18 +20,41 @@ class TOYSOLDIERS_API AProjectileBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProjectileBase();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float damage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	float Damage = 20.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float speed;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	float LifeTime = 5.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float gravityScale;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	bool destroyOnHit = true;
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	AActor* projOwner;
+	UProjectileMovementComponent* projMovement;
+
+	UFUNCTION()
+	void OnHit(
+		UPrimitiveComponent* HitComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		FVector NormalImpulse,
+		const FHitResult& Hit
+	);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnProjectileImpact(const FHitResult& Hit);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	USphereComponent* collisionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UProjectileMovementComponent* movement;
+
+	TArray<AActor*> actorsToIgnore;
 
 public:	
 	// Called every frame
