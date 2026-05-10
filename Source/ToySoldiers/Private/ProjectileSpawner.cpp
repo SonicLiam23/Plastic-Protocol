@@ -9,6 +9,9 @@
 UProjectileSpawner::UProjectileSpawner()
 {
 	ProjectileToSpawn = AProjectileBase::StaticClass();	
+
+	MaxBulletsPerSecond = 3.f;
+	
 }
 
 // Called when the game starts or when spawned
@@ -17,7 +20,8 @@ void UProjectileSpawner::BeginPlay()
 	Super::BeginPlay();
 
 	//log to screen 
-
+	timeBetweenShots = 1.f / MaxBulletsPerSecond;
+	timeOfLastShot = 0.f;
 	UEntityUpgradeComponent* upgradeComp = GetOwner()->FindComponentByClass<UEntityUpgradeComponent>();
 
 	if (upgradeComp)
@@ -28,6 +32,11 @@ void UProjectileSpawner::BeginPlay()
 
 AProjectileBase* UProjectileSpawner::SpawnProjectile()
 {
+	if (timeOfLastShot + timeBetweenShots > GetWorld()->GetTimeSeconds())
+	{
+		return nullptr;
+	}
+
 	if (IsValid(ProjectileToSpawn))
 	{
 		AProjectileBase* spawned = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileToSpawn, GetComponentTransform());
@@ -39,6 +48,7 @@ AProjectileBase* UProjectileSpawner::SpawnProjectile()
 			// projectile stat multipliers can be added here as needed
 		}
 
+		timeOfLastShot = GetWorld()->GetTimeSeconds();
 		return spawned;
 	}
 	return nullptr;

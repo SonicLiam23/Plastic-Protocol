@@ -28,7 +28,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectileBase> ProjectileToSpawn;// = AProjectileBase::StaticClass();
 
-	UFUNCTION(BlueprintCallable)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxBulletsPerSecond;
+
+	UPROPERTY(BlueprintReadOnly)
+	float timeBetweenShots;
+	float timeOfLastShot;
+
+	UFUNCTION(BlueprintCallable, meta = (ReturnDisplayName = "Ref to fired proj"))
 	AProjectileBase* SpawnProjectile();
 
 	UStatMultipliers* statMultipliers;
