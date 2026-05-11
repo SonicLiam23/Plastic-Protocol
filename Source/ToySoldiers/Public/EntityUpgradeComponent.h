@@ -41,5 +41,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats")
 	UStatMultipliers* StatData;
-		
+
+	// CONTAINS THE FORMULA FOR CALCULATING THE XP NEEDED FOR THE NEXT LEVEL, CAN BE CHANGED TO WHATEVER FORMULA YOU WANT
+	// https://www.desmos.com/calculator/lw4roboaa0
+	const float gapBetweenLevels = 0.3f; // please use the link to visualize this
+	const int xPNeededforLvlOne = 3;
 };

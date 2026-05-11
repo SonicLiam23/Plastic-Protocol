@@ -28,11 +28,11 @@ public:
 	float MaxHealthMultiplier = 1.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) 
-	float CurrentXP;
+	int CurrentXP = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float NextLevelXP;
+	int NextLevelXP;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int PlayerLevel;
+	int PlayerLevel = 1;
 };
