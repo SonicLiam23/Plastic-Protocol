@@ -28,8 +28,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectileBase> ProjectileToSpawn;// = AProjectileBase::StaticClass();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxBulletsPerSecond;
+
+	UFUNCTION(BlueprintCallable)
+	void SetMaxBulletsPerSecond(float newMax);
 
 	UPROPERTY(BlueprintReadOnly)
 	float timeBetweenShots;

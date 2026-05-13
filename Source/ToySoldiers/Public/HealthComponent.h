@@ -21,6 +21,8 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 	void TakeDamage(float DamageAmount);
+
+
 	UPROPERTY(BlueprintAssignable, Category = "Health")
 	FOnTakeDamageSignature OnTakeDamage;
 
@@ -42,11 +44,13 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
 	float MaxHealth = 100.f;
+	float baseMaxHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
 	float CurrentHealth = 100.f;
+
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(
@@ -58,7 +62,8 @@ protected:
 	);
 
 	bool isOnPlayer;
-	static UEntityUpgradeComponent* playerStatsComponent;
+
+	static UEntityUpgradeComponent* UpgradeComponent;
 
 	// IM AWARE THIS IS IN THE WRONG PLACE AND ITS STUPID BUT THATS THE IDEA OF A PROTOTYPE I GUESS XD
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Experience")

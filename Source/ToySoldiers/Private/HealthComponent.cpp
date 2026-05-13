@@ -4,11 +4,13 @@
 #include "HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EntityUpgradeComponent.h"
+#include <sstream>
+#include "StatMultipliers.h"
 
-UEntityUpgradeComponent* UHealthComponent::playerStatsComponent;
+UEntityUpgradeComponent* UHealthComponent::UpgradeComponent;
 
 // Sets default values for this component's properties
-UHealthComponent::UHealthComponent()
+UHealthComponent::UHealthComponent() : isOnPlayer(false)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -33,19 +35,29 @@ void UHealthComponent::BeginPlay()
 		if (Pawn->IsPlayerControlled())
 		{
 			isOnPlayer = true;
-			playerStatsComponent = Cast<UEntityUpgradeComponent>(Pawn->GetComponentByClass(UEntityUpgradeComponent::StaticClass()));
+			UpgradeComponent = Cast<UEntityUpgradeComponent>(Pawn->GetComponentByClass(UEntityUpgradeComponent::StaticClass()));
 		}
 	}
+
+	baseMaxHealth = MaxHealth;
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount)
 {	
+	std::stringstream ss;
+
 	CurrentHealth -= DamageAmount;
-	OnTakeDamage.Broadcast(DamageAmount);
+	
+
+	ss << CurrentHealth;
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, ss.str().c_str());
+
 	if (CurrentHealth <= 0.f)
 	{
 		Die();
 	}
+
+	OnTakeDamage.Broadcast(DamageAmount);
 }
 
 void UHealthComponent::Heal(float HealAmount, bool ignoreMaxHealth)
@@ -61,10 +73,15 @@ void UHealthComponent::Heal(float HealAmount, bool ignoreMaxHealth)
 void UHealthComponent::Die()
 {
 	OnDeath.Broadcast();
-
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Death"));
 	if (!isOnPlayer)
 	{
-		playerStatsComponent->GainXP(XPValue);
+		if (UpgradeComponent == nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("No player stats found"));
+			return;
+		}
+		UpgradeComponent->GainXP(XPValue);
 	}
 
 	if (Owner && AutoDestroyOnDeath)
@@ -92,6 +109,9 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (UpgradeComponent != nullptr)
+	{
+		// MaxHealth = baseMaxHealth * UpgradeComponent->StatData->MaxHealthMultiplier;
+	}
 }
 

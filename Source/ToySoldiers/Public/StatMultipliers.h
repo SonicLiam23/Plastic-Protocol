@@ -15,24 +15,28 @@ class TOYSOLDIERS_API UStatMultipliers : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float DamageMultiplier = 1.f;
+	UStatMultipliers();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FireRateMultiplier = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float DamageMultiplier;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float SpeedMultiplier = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float FireRateMultiplier;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float MaxHealthMultiplier = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float MaxHealthMultiplier;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) 
-	int CurrentXP = 0;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int NextLevelXP;
+	// not really stats
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int PlayerLevel = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float CurrentXP;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float NextLevelXP;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float PlayerLevel;
+
+	float& GetRandomStat();
 };
