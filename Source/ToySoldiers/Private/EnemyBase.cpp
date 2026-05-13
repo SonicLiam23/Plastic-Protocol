@@ -3,6 +3,7 @@
 
 #include "EnemyBase.h"
 
+
 // Sets default values
 AEnemyBase::AEnemyBase()
 {
