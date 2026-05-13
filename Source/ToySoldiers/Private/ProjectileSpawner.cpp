@@ -3,6 +3,7 @@
 
 #include "ProjectileSpawner.h"
 #include "StatMultipliers.h"
+#include <sstream>
 #include "EntityUpgradeComponent.h"
 
 // Sets default values
@@ -31,9 +32,28 @@ void UProjectileSpawner::BeginPlay()
 	}
 }
 
+void UProjectileSpawner::SetMaxBulletsPerSecond(float newMax)
+{
+	if (MaxBulletsPerSecond == newMax)
+		return;
+
+	MaxBulletsPerSecond = newMax;
+
+	timeBetweenShots = 1.f / MaxBulletsPerSecond;
+	
+	timeOfLastShot = 0.f;
+}
+
 AProjectileBase* UProjectileSpawner::SpawnProjectile()
 {
-	if (timeOfLastShot + timeBetweenShots > GetWorld()->GetTimeSeconds())
+	float scaledTime = timeBetweenShots;
+
+	if (statMultipliers != nullptr)
+	{
+		scaledTime /= statMultipliers->FireRateMultiplier;
+	}
+
+	if (timeOfLastShot + scaledTime >= GetWorld()->GetTimeSeconds())
 	{
 		return nullptr;
 	}
@@ -42,7 +62,7 @@ AProjectileBase* UProjectileSpawner::SpawnProjectile()
 	{
 		AProjectileBase* spawned = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileToSpawn, GetComponentTransform());
 		spawned->InstigatorController = GetOwner()->GetInstigatorController();
-		spawned->FinishSpawning(GetComponentTransform());
+		
 		if (statMultipliers)
 		{
 			spawned->Damage *= statMultipliers->DamageMultiplier;
@@ -50,6 +70,8 @@ AProjectileBase* UProjectileSpawner::SpawnProjectile()
 		}
 
 		timeOfLastShot = GetWorld()->GetTimeSeconds();
+
+		spawned->FinishSpawning(GetComponentTransform());
 		return spawned;
 	}
 	return nullptr;
