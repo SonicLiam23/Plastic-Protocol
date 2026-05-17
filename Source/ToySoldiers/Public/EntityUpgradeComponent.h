@@ -43,11 +43,11 @@ public:
 	UStatMultipliers* StatData;
 
 	UFUNCTION(BlueprintPure, Category = "XP")
-	float GetCurrentXPPercentage() const { StatData->CurrentXP  / StatData->NextLevelXP; }
+	float GetCurrentXPPercentage() const { return StatData->CurrentXP  / StatData->NextLevelXP; }
 	UFUNCTION(BlueprintPure, Category = "XP")
-	float GetCurrentXP() const { StatData->CurrentXP; }
+	float GetCurrentXP() const { return StatData->CurrentXP; }
 	UFUNCTION(BlueprintPure, Category = "XP")
-	float GetMaxXP() const { StatData->NextLevelXP; }
+	float GetMaxXP() const { return StatData->NextLevelXP; }
 
 	// CONTAINS THE FORMULA FOR CALCULATING THE XP NEEDED FOR THE NEXT LEVEL, CAN BE CHANGED TO WHATEVER FORMULA YOU WANT
 	// https://www.desmos.com/calculator/lw4roboaa0
