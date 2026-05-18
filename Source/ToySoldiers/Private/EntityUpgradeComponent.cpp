@@ -51,17 +51,11 @@ void UEntityUpgradeComponent::GainXP(float XPAmount)
 
 	if (StatData == nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("NO STATDATA"));
 		return;
 	}
 
 	StatData->CurrentXP += XPAmount;
 	OnGainXP.Broadcast(XPAmount);
-
-
-	std::stringstream ss;
-	ss << XPAmount;
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, ss.str().c_str());
 
 
 	// process all level ups
