@@ -98,7 +98,15 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 		bool isProjectileFromPlayer;
 		if (InstigatedBy->GetPawn() != nullptr)
 		{
-			isProjectileFromPlayer = InstigatedBy->GetPawn()->IsPlayerControlled();
+			try
+			{
+				isProjectileFromPlayer = InstigatedBy->GetPawn()->IsPlayerControlled();
+			}
+			catch (...)
+			{
+				isProjectileFromPlayer = false;
+			}
+			
 		}
 		else
 		{
