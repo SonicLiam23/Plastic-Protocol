@@ -98,10 +98,15 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 		// if there is no instigator, ignore the damage
 		return;
 	}
-	bool isProjectileFromPlayer = InstigatedBy->GetPawn()->IsPlayerControlled();
 
-	if (isOnPlayer ^ isProjectileFromPlayer) 
+	bool isProjectileFromPlayer = InstigatedBy->IsPlayerController();
+	
+
+	if (isOnPlayer ^ isProjectileFromPlayer)
+	{
 		TakeDamage(Damage);
+	}
+		
 }
 
 // Called every frame

@@ -10,7 +10,7 @@
 #define ECC_Projectile ECC_GameTraceChannel1
 
 // Sets default values
-AProjectileBase::AProjectileBase()
+AProjectileBase::AProjectileBase() 
 {
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -30,7 +30,6 @@ void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	projOwner = GetOwner();
 	projMovement = FindComponentByClass<UProjectileMovementComponent>();
 	projMovement->Activate();
 
@@ -45,14 +44,15 @@ void AProjectileBase::BeginPlay()
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	
-	if (!OtherActor || OtherActor == this || OtherActor == projOwner) return;
+	if (!OtherActor || OtherActor == this) return;
 	if (actorsToIgnore.Contains(OtherActor)) return;
 	actorsToIgnore.Add(OtherActor);
 	
 	
-	UGameplayStatics::ApplyDamage(OtherActor, Damage, InstigatorController, this, nullptr);
+	UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigatorController(), this, nullptr);
 
 	OnProjectileImpact(Hit);
+
 
 	if (destroyOnHit)
 		Destroy();
@@ -60,12 +60,11 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 void AProjectileBase::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor || OtherActor == this || OtherActor == projOwner) return;
+	if (!OtherActor || OtherActor == this) return;
 	if (actorsToIgnore.Contains(OtherActor)) return;
 	actorsToIgnore.Add(OtherActor);
 
-
-	UGameplayStatics::ApplyDamage(OtherActor, Damage, InstigatorController, this, nullptr);
+	UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigatorController(), this, nullptr);
 
 	OnProjectileImpact(SweepResult);
 
