@@ -43,4 +43,6 @@ protected:
 
 	UStatMultipliers* statMultipliers;
 
+	APawn* Instigator;
+
 };

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ProjectileSpawner.h"
@@ -30,6 +30,21 @@ void UProjectileSpawner::BeginPlay()
 	{
 		statMultipliers = upgradeComp->StatData;
 	}
+
+	AActor* Owner = GetOwner();
+	APawn* InstigatorPawn = nullptr;
+
+	// Walk up attachment hierarchy (weapon → pawn)
+	for (AActor* Actor = Owner; Actor; Actor = Actor->GetAttachParentActor())
+	{
+		if (APawn* Pawn = Cast<APawn>(Actor))
+		{
+			InstigatorPawn = Pawn;
+			break;
+		}
+	}
+
+	Instigator = InstigatorPawn;
 }
 
 void UProjectileSpawner::SetMaxBulletsPerSecond(float newMax)
@@ -58,10 +73,20 @@ AProjectileBase* UProjectileSpawner::SpawnProjectile()
 		return nullptr;
 	}
 
+	if (Instigator == nullptr)
+	{
+		return nullptr;
+	}
+
 	if (IsValid(ProjectileToSpawn))
 	{
+
+
 		AProjectileBase* spawned = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileToSpawn, GetComponentTransform());
-		spawned->InstigatorController = GetOwner()->GetInstigatorController();
+
+
+
+		spawned->SetInstigator(Instigator);
 		
 		if (statMultipliers)
 		{
