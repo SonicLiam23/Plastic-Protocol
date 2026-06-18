@@ -96,8 +96,10 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 	if (InstigatedBy != nullptr)
 	{
 		bool isProjectileFromPlayer;
-		if (InstigatedBy->GetPawn() != nullptr)
+		if (IsValid(InstigatedBy->GetPawn()))
 		{
+			// an edge case where it would return enemy is valid after being destroyed, my only guess is the player is hit, it passes the IsValid check, enemy dies, now InstigatedBy and/or its Pawn is null?
+			// I absolutley despise this, but deadline is approaching and it works. It genuinley pains me to write and push this
 			try
 			{
 				isProjectileFromPlayer = InstigatedBy->GetPawn()->IsPlayerControlled();
