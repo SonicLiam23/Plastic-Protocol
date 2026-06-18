@@ -8,7 +8,9 @@ public class ToySoldiers : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {
+        bEnableExceptions = true;
+
+        PublicDependencyModuleNames.AddRange(new string[] {
 			"Core",
 			"CoreUObject",
 			"Engine",
